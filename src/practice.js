@@ -6,11 +6,57 @@ const knexInstance = knex({
     connection: process.env.DB_URL
 })
 
-const q1 = knexInstance('amazong_products').select('*')
-.toQuery();
+// knexInstance
+// .select('product_id', 'name', 'price', 'category')
+// .from('amazong_products')
+// .where({name: 'Point of view gun'})
+// .first()
+// .then(result => {
+//     console.log(result)
+// })
+// const qry = knexInstance
+// .select('product_id', 'name', 'price', 'category')
+// .from('amazong_products')
+// .where({name: 'Point of view gun'})
+// .first()
+// .toQuery()
+// console.log(qry)
 
-const q2 = knexInstance.from('amazong_products').select('*')
-.toQuery();
+function searchByProductName(searchTerm) {
+    knexInstance
+        .select('product_id', 'name', 'price', 'category')
+        .from('amazong_products')
+        .where('name', 'ILIKE', `%${searchTerm}%`)
+        .then(result => {
+            console.log(result)
+})
+}
+// searchByProductName('holo');
 
-console.log('q1:', q1);
-console.log('q2:', q2);
+function paginateProducts(page) {
+    const productsPerPage = 10
+    const offset = productsPerPage * (page - 1)
+
+    knexInstance
+    .select('product_id', 'name', 'price', 'category')
+    .from('amazong_products')
+    .limit(productsPerPage)
+    .offset(offset)
+    .then(result => {
+        console.log(result)
+    })
+}
+// paginateProducts(2);
+
+function getProductsWithImages() {
+    knexInstance
+    .select('product_id', 'name', 'price', 'category')
+    .from('amazong_products')
+    .whereNotNull('image')
+    .then(result => {
+        console.log(result)
+    })
+}
+// getProductsWithImages()
+
+
